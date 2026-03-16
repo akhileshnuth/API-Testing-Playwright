@@ -2,12 +2,12 @@ const { test, expect } = require("@playwright/test");
 const postRequest = require("../test-data/post_request_body.json");
 
 test("Query parameter in playwright api testing", async ({ request }) => {
-  // create post api request using playwright
+  // create post api request
   const postAPIResponse = await request.post("/booking", {
     data: postRequest,
   });
 
-  // create GET api request using playwright
+  // create GET api request 
   const getAPIResponse = await request.get("/booking/", {
     params: {
       firstname: "akhilesh",

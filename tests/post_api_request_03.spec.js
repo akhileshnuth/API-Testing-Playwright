@@ -1,54 +1,44 @@
 const { test, expect } = require("@playwright/test");
-
-import { faker } from "@faker-js/faker";
-
+const { faker } = require("@faker-js/faker");       // ✅ FIX 1: use require, not import
 const { DateTime } = require("luxon");
+
+const postRequestBody = require("../test-data/post_request_body.json");
 
 test("Create POST api request using dynamic request body in playwright", async ({
   request,
 }) => {
-  // create test data
-  const firstName = faker.person.firstName();
-  const lastName = faker.person.lastName();
-  const totalPrice = faker.number.int(1000);
-
-  const checkInDate = DateTime.now().toFormat("yyyy-MM-dd");
-  const checkOutDate = DateTime.now().plus({ day: 5 }).toFormat("yyyy-MM-dd");
-
-  // create post api request using playwright
-  const postAPIResponse = await request.post("/booking", {
-    data: {
-      firstname: firstName,
-      lastname: lastName,
-      totalprice: totalPrice,
-      depositpaid: true,
-      bookingdates: {
-        checkin: checkInDate,
-        checkout: checkOutDate,
-      },
-      additionalneeds: "super bowls",
+  // Override just the dynamic fields using Faker + Luxon
+  const requestBody = {
+    ...postRequestBody,                              // spread the base data from JSON
+    firstname: faker.person.firstName(),
+    lastname: faker.person.lastName(),
+    totalprice: faker.number.int(1000),
+    bookingdates: {
+      checkin: DateTime.now().toFormat("yyyy-MM-dd"),
+      checkout: DateTime.now().plus({ days: 5 }).toFormat("yyyy-MM-dd"), //
     },
+  };
+
+  const postAPIResponse = await request.post("/booking", {
+    data: requestBody,
   });
 
-  // validate status code
-  console.log(await postAPIResponse.json());
+  // ✅ FIX: call .json() ONCE, save it, then log
+  const postAPIResponseBody = await postAPIResponse.json();
+  console.log(postAPIResponseBody);
 
   expect(postAPIResponse.ok()).toBeTruthy();
   expect(postAPIResponse.status()).toBe(200);
 
-  // validate api response json obj
-  const postAPIResponseBody = await postAPIResponse.json();
+  expect(postAPIResponseBody.booking).toHaveProperty("firstname", requestBody.firstname);
+  expect(postAPIResponseBody.booking).toHaveProperty("lastname", requestBody.lastname);
 
-  expect(postAPIResponseBody.booking).toHaveProperty("firstname", firstName);
-  expect(postAPIResponseBody.booking).toHaveProperty("lastname", lastName);
-
-  // validate api response nested json obj
   expect(postAPIResponseBody.booking.bookingdates).toHaveProperty(
     "checkin",
-    checkInDate
+    requestBody.bookingdates.checkin
   );
   expect(postAPIResponseBody.booking.bookingdates).toHaveProperty(
     "checkout",
-    checkOutDate
+    requestBody.bookingdates.checkout
   );
 });

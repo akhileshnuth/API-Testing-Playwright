@@ -21,7 +21,7 @@ test("Create Post api request using dynamic JSON file in playwright", async ({
     "apple"
   );
 
-  // create post api request using playwright
+  // create post api request
   const postAPIResponse = await request.post("/booking", {
     data: JSON.parse(updatedRequestBody),
   });

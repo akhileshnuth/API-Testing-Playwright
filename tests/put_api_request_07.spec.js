@@ -5,7 +5,7 @@ const putRequest = require("../test-data/put_request_body.json");
 const { json } = require("stream/consumers");
 
 test("Query parameter in playwright api testing", async ({ request }) => {
-  // create post api request using playwright
+  // create post api request 
   const postAPIResponse = await request.post("/booking", {
     data: postRequest,
   });
@@ -13,7 +13,7 @@ test("Query parameter in playwright api testing", async ({ request }) => {
   const bookingId = await postAPIResponse.json();
   const bId = bookingId.bookingid;
 
-  // create GET api request using playwright
+  // create GET api request 
   const getAPIResponse = await request.get("/booking/", {
     params: {
       firstname: "akhilesh",
