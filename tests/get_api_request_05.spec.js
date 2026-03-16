@@ -6,11 +6,10 @@ test("Create GET api request in playwright", async ({ request }) => {
 
   const getAPIResponseBody = await getAPIResponse.json();
   console.log(getAPIResponseBody);                        
-  
+
   expect(getAPIResponse.ok()).toBeTruthy();
   expect(getAPIResponse.status()).toBe(200);
 
-  // ✅ Also assert the shape of the response body
   expect(getAPIResponseBody).toHaveProperty("firstname");
   expect(getAPIResponseBody).toHaveProperty("lastname");
   expect(getAPIResponseBody).toHaveProperty("totalprice");
