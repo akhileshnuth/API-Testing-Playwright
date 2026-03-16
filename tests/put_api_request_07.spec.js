@@ -3,7 +3,7 @@ const postRequest = require("../test-data/post_request_body.json");
 const tokenRequest = require("../test-data/token_request_body.json");
 const putRequest = require("../test-data/put_request_body.json");
 
-test("PUT api request with auth token in playwright", async ({ request }) => {
+test("PUT api request with auth token", async ({ request }) => {
 
   // Step 1: Create a booking 
   const postAPIResponse = await request.post("/booking", {
